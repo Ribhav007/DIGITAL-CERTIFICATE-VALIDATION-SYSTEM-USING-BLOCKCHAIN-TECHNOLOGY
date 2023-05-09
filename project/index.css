@@ -1,0 +1,12 @@
+.float-container {
+    border: 10px solid red;
+    padding: 20px;
+}
+
+.float-child {
+    width: 50%;
+    float: left;
+    padding: 20px;
+    background-color: whitesmoke;
+    border: 2px solid red;
+}  

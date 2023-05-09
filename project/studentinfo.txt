@@ -1,0 +1,114 @@
+// SPDX-License-Identifier: GPL-3.0
+
+pragma solidity >=0.7.0 <0.9.0;
+
+
+contract StudentInfo {
+
+    struct student {
+        string usn;
+        string firstName;
+        string lastName;
+        string DOB;
+        string marksheet;
+        string ipfs;
+        address owner;
+        bool status;
+    }
+
+    struct user{
+        string fname;
+        string lname;
+        address user;
+        string pass;
+        bool alive;
+    }
+    mapping (string => student) students;
+    mapping (address => user) users;
+    uint studcount = 0;
+
+    function store(string memory u,string memory fname,string memory lname,string memory dob,string memory hash,string memory ipfs) public returns(string memory) {
+        
+        string memory success;        
+        if (existstud(u)){
+            success = "false";
+        }
+        else{
+            address myaddress = msg.sender; //contract address
+             students[u] = student(u,fname,lname,dob,hash,ipfs,myaddress,true);
+             studcount++;
+             success = "true";
+        }
+        return success;         
+    }
+
+    function allstud() public view returns (uint){
+
+        return studcount;
+
+    }
+    function existstud(string memory u) private view returns (bool){
+            bool exists;
+            if (students[u].status==true) 
+            {
+               exists = true;
+            }
+            else{
+                exists = false;
+            }
+
+            return exists;
+    }
+    
+
+        
+    function getInfo(string memory u) public view returns(string memory,string memory,string memory,string memory,string memory,address,string memory) {
+                 if (existstud(u)){
+                   return (students[u].usn,students[u].firstName,students[u].lastName,students[u].DOB,students[u].marksheet,students[u].owner,students[u].ipfs);
+                 }
+                 else{
+                     return ("Null",students[u].firstName,students[u].lastName,students[u].DOB,students[u].marksheet,students[u].owner,students[u].ipfs);
+                 }
+    }
+
+    function adduser(string memory f,string memory l,string memory pass) public returns(bool) {
+        
+        bool success; 
+        address myaddress = msg.sender;       
+        if (existuser(myaddress)){
+            success = false;
+        }
+        else{
+             //contract address
+             users[myaddress] = user(f,l,myaddress,pass,true);
+             success = true;
+        }
+        return success;         
+    } 
+
+    function existuser(address u) private view returns (bool){
+            bool exists;
+            if (users[u].alive) 
+            {
+               exists = true;
+            }
+            else{
+                exists = false;
+            }
+
+            return exists;
+    }
+
+
+     function getuser() public view returns(string memory,string memory,address,string memory) {
+                 address adr = msg.sender;
+                 if (existuser(adr)){
+                   return (users[adr].fname,users[adr].lname,users[adr].user,users[adr].pass);
+                 }
+                 else{
+                     return ("Null",users[adr].lname,users[adr].user,users[adr].pass);
+                 }
+    }
+   
+
+}
